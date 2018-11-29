@@ -1,3 +1,7 @@
 "# IR_Project3" 
 
-Work
+Finished
+- Read File from Dataset
+
+Task
+(put it here)
