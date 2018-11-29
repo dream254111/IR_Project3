@@ -8,57 +8,57 @@ import java.io.File;
 
 public class XMLReader {
 	
-	public static void Reader(File file) {
+	public static int Reader(File file) {
 		try {
-
-			File fXmlFile = file;
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);
+			Document doc = dBuilder.parse(file);
 					
-			//optional, but recommended
-			//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
 			doc.getDocumentElement().normalize();
-
-			System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-			
-			
 			NodeList nList = doc.getElementsByTagName("article");
-					
-			System.out.println("----------------------------");
 
 			for (int temp = 0; temp < nList.getLength(); temp++) {
-
 				Node nNode = nList.item(temp);
-						
-				System.out.println("\nCurrent Element :" + nNode.getNodeName());
-						
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
+					
 					Element eElement = (Element) nNode;
-
-					System.out.println("Journal id 1: " + eElement.getElementsByTagName("journal-id").item(0).getTextContent());
-					System.out.println("Journal id 2: " + eElement.getElementsByTagName("journal-id").item(1).getTextContent());
-					System.out.println("Journal title : " + eElement.getElementsByTagName("journal-title").item(0).getTextContent());
-					System.out.println("Article id : " + eElement.getElementsByTagName("article-id").item(0).getTextContent());
-					System.out.println("Article name : " + eElement.getElementsByTagName("article-title").item(0).getTextContent());
-					System.out.println("Publish date : ");
-					System.out.println("Issue id : " + eElement.getElementsByTagName("issue-id").item(0).getTextContent());
+					
+					String j_title = eElement.getElementsByTagName("journal-title").item(0).getTextContent();
+					String j_id = eElement.getElementsByTagName("journal-id").item(1).getTextContent();
+					String a_title = eElement.getElementsByTagName("article-title").item(0).getTextContent();
+					String a_id = eElement.getElementsByTagName("article-id").item(0).getTextContent();
+					String i_id = eElement.getElementsByTagName("issue-id").item(0).getTextContent();
+					
+					if(j_title.equals("") || j_id.equals("") || a_title.equals("") || a_id.equals("") || i_id.equals("")) {
+						System.out.println("ERROR");
+						return 0;
+					}
+					else {
+						if(a_id.contains("/"))
+							a_id = a_id.substring(8, a_id.length());
+						
+						System.out.println("Journal Title: " + j_title);
+						System.out.println("   Journal ID: " + j_id);
+						System.out.println("Article Title: " + a_title);
+						System.out.println("   Article ID: " + a_id);
+						System.out.println("     Issue ID: " + i_id);
+					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		return 1;
 	}
 	
 	public static void main(String argv[]) {
 		File folder = new File("./1/metadata");
-		int count = 0;
+		int count = 1;
 		for(File fileEntry : folder.listFiles()) {
-			Reader(fileEntry);
-			count++;
-			if(count > 20) break;
+			System.out.println("==================");
+			System.out.println("File " + count);
+			count += Reader(fileEntry);
+			if(count > 200) break;
 		}
 	}
 }

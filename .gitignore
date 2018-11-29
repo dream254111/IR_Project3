@@ -1,1 +1,9 @@
 *.txt
+*.ini
+*.log
+*.lock
+*.index
+*.class
+*.xml
+*.classpath
+*.project
