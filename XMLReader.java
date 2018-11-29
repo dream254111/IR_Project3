@@ -6,9 +6,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 
 public class XMLReader {
@@ -30,7 +32,6 @@ public class XMLReader {
 			}
 			
 			content = content.replaceAll("[^a-zA-Z0-9\\s]", "");
-			
 			return content;
 			
 		} catch (Exception e) {
@@ -60,24 +61,37 @@ public class XMLReader {
 					String a_id = eElement.getElementsByTagName("article-id").item(0).getTextContent();
 					String i_id = eElement.getElementsByTagName("issue-id").item(0).getTextContent();
 					
-					if(j_title.equals("") || j_id.equals("") || a_title.equals("") || a_id.equals("") || i_id.equals("")) {
-						System.out.println("ERROR");
+					if(j_title.equals("") || j_id.equals("") || a_title.equals("") || a_id.equals("") || i_id.equals(""))
 						return 0;
-					}
 					else {
 						if(a_id.contains("/"))
 							a_id = a_id.substring(8, a_id.length());
 						
-						System.out.println("Journal Title: " + j_title);
-						System.out.println("   Journal ID: " + j_id);
-						System.out.println("Article Title: " + a_title);
-						System.out.println("   Article ID: " + a_id);
-						System.out.println("     Issue ID: " + i_id);
+						j_title = j_title.replaceAll("[^a-zA-Z0-9\\s]", "");
+						a_title = a_title.replaceAll("[^a-zA-Z0-9\\s]", "");
 						
 						String content = readContent(a_id);
 						
-						System.out.println("      Content: " + content);
-
+						BufferedWriter writer = null;
+						File newFile = new File(".\\DB\\" + j_id + "_" + a_id + ".txt");
+						
+						try {
+							writer = new BufferedWriter(new FileWriter(newFile));
+							writer.append(j_id + ",");
+							writer.append(j_title + ",");
+							writer.append(a_id + ",");
+							writer.append(a_title + ",");
+							writer.append(i_id + ",");
+							writer.append(content);
+						} catch (Exception e) {
+							e.printStackTrace();
+						} finally {
+							try {
+								if(writer != null) writer.close();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
 					}
 				}
 			}
@@ -91,10 +105,8 @@ public class XMLReader {
 		File folder = new File(".\\1\\metadata");
 		int count = 1;
 		for(File fileEntry : folder.listFiles()) {
-			System.out.println("==================");
-			System.out.println("File " + count);
 			count += Reader(fileEntry);
-			if(count > 1) break;
+			if(count > 2500) break;
 		}
 	}
 }
