@@ -1,0 +1,1 @@
+j100086,Annals of Mathematics,1968048,Errata,i307133,ERRATA Volume 15 On the Projective Differential Geometry of Plane Anharmonic Curves By SAMUEL W REAVES Professor A M Harding has called my atten tion to the fact that equations 33 and 34 should read 33 2e2zx2 t 8exy  y2  10  4te2x  2  tSey21210t417e2O 34 y   2eU2 SWR
