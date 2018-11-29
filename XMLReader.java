@@ -35,7 +35,7 @@ public class XMLReader {
 			return content;
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
 		return null;
 	}
@@ -52,11 +52,13 @@ public class XMLReader {
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 				Node nNode = nList.item(temp);
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+					int i = 1;
 					
 					Element eElement = (Element) nNode;
 					
 					String j_title = eElement.getElementsByTagName("journal-title").item(0).getTextContent();
-					String j_id = eElement.getElementsByTagName("journal-id").item(1).getTextContent();
+					while(eElement.getElementsByTagName("journal-id").item(i).equals(eElement.getElementsByTagName("journal-id").item(i-1))) i++;
+					String j_id = eElement.getElementsByTagName("journal-id").item(i).getTextContent();
 					String a_title = eElement.getElementsByTagName("article-title").item(0).getTextContent();
 					String a_id = eElement.getElementsByTagName("article-id").item(0).getTextContent();
 					String i_id = eElement.getElementsByTagName("issue-id").item(0).getTextContent();
@@ -71,6 +73,8 @@ public class XMLReader {
 						a_title = a_title.replaceAll("[^a-zA-Z0-9\\s]", "");
 						
 						String content = readContent(a_id);
+						
+						if(content == null || content.length() < 10) return 0;
 						
 						BufferedWriter writer = null;
 						File newFile = new File(".\\DB\\" + j_id + "_" + a_id + ".txt");
