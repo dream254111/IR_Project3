@@ -6,4 +6,5 @@ Finished
 
 Task
 
-(put it here)
+- Search Document [by ...]
+- Ranking (TFIDF) [by ...]
