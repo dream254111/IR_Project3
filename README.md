@@ -2,6 +2,7 @@
 
 Finished
 - Read File from Dataset
+- GUI Version 1
 
 Task
 
