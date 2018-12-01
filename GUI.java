@@ -10,7 +10,7 @@ public class GUI {
 	
 	
 	public static void main(String[] args) {
-		JFrame frame = new JFrame("Example");
+		JFrame frame = new JFrame("Arcademic Journal Search Engine");
 		
 		JPanel panel1 = new JPanel();
 		
@@ -30,9 +30,10 @@ public class GUI {
 		
 		frame.add(panel1);
 		
+		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
-		frame.setSize(300, 500);
+		frame.setSize(500, 100);
 	}
 }
