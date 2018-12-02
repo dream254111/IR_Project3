@@ -272,35 +272,33 @@ public class ArticleSearcher {
 		int pointer = 0, checkCT = 0; 
 		String docC = "", docT = "";
 		
+		//check rank of content & title (should be equal)
 		System.out.println(rankC.size() + " " + rankT.size());
 		
 		while(pointer != k) {
-			double max = Integer.MIN_VALUE;
-			if(checkCT == 0 || checkCT == 1) {
-				docC = "";
-				for (Map.Entry<String, Double> entry : rankC.entrySet()) {
-					boolean check = true;
-					for (int i = 0; i < pointer; i++)
-						if(entry.getKey() == kDoc[i]) check = false;
-					if(check) {
-						if(max < entry.getValue()) {
-							max = entry.getValue();
-							docC = entry.getKey();
-						}
+			double maxC = Integer.MIN_VALUE;
+			double maxT = Integer.MIN_VALUE;
+			docC = "";
+			for (Map.Entry<String, Double> entry : rankC.entrySet()) {
+				boolean check = true;
+				for (int i = 0; i < pointer; i++)
+					if(entry.getKey() == kDoc[i]) check = false;
+				if(check) {
+					if(maxC < entry.getValue()) {
+						maxC = entry.getValue();
+						docC = entry.getKey();
 					}
 				}
 			}
-			if(checkCT == 0 || checkCT == 2) {
-				docT = "";
-				for (Map.Entry<String, Double> entry : rankT.entrySet()) {
-					boolean check = true;
-					for (int i = 0; i < pointer; i++)
-						if(entry.getKey() == kDoc[i]) check = false;
-					if(check) {
-						if(max < entry.getValue()) {
-							max = entry.getValue();
-							docT = entry.getKey();
-						}
+			docT = "";
+			for (Map.Entry<String, Double> entry : rankT.entrySet()) {
+				boolean check = true;
+				for (int i = 0; i < pointer; i++)
+					if(entry.getKey() == kDoc[i]) check = false;
+				if(check) {
+					if(maxT < entry.getValue()) {
+						maxT = entry.getValue();
+						docT = entry.getKey();
 					}
 				}
 			}
