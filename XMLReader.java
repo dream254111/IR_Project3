@@ -80,6 +80,13 @@ public class XMLReader {
 						File newFile = new File(".\\DB\\" + j_id + "_" + a_id + ".txt");
 						
 						try {
+							j_id = j_id.toUpperCase();
+							j_title = j_title.toUpperCase();
+							a_id = a_id.toUpperCase();
+							a_title = a_title.toUpperCase();
+							i_id = i_id.toUpperCase();
+							content = content.toUpperCase();
+							
 							writer = new BufferedWriter(new FileWriter(newFile));
 							writer.append(j_id + ",");
 							writer.append(j_title + ",");
