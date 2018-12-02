@@ -9,16 +9,19 @@ public class Document {
 	private String a_title = null;
 	private String issue_id = null;
 	private String content = null;
-	private List<String> tokens = null;	//tokens after preprocessing raw text
+	private List<String> contentTokens = null;	//tokens after preprocessing raw text
+	private List<String> titleTokens = null;
 	
-	public Document(String j_id, String j_title, String a_id, String a_title, String issue_id, String content, List<String> tokens) {
+	public Document(String j_id, String j_title, String a_id, String a_title,
+			String issue_id, String content, List<String> contentTokens, List<String> titleTokens) {
 		this.j_id = j_id;
 		this.j_title = j_title;
 		this.a_id = a_id;
 		this.a_title = a_title;
 		this.issue_id = issue_id;
 		this.content = content;
-		this.tokens = tokens;
+		this.contentTokens = contentTokens;
+		this.titleTokens = titleTokens;
 	}
 	
 	public Document(File file) {
@@ -93,12 +96,20 @@ public class Document {
 		this.issue_id = issue_id;
 	}
 
-	public List<String> getTokens() {
-		return tokens;
+	public List<String> getContentTokens() {
+		return contentTokens;
 	}
 
-	public void setTokens(List<String> tokens) {
-		this.tokens = tokens;
+	public void setContentTokens(List<String> tokens) {
+		this.contentTokens = tokens;
+	}
+	
+	public List<String> getTitleTokens() {
+		return titleTokens;
+	}
+
+	public void setTitleTokens(List<String> tokens) {
+		this.titleTokens = tokens;
 	}
 
 	public String getContent() {
