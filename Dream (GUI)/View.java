@@ -14,12 +14,12 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 public class View extends JFrame{
-	String[] header = {"Journal Name", "Article Name"};
+	String[] header = {"Journal Name", "Article Name", "Score"};
 	
 	JPanel input = new JPanel();
 	JPanel output = new JPanel();
 	
-	JTextField inputText = new JTextField(10);
+	JTextField inputText = new JTextField(15);
 	JButton search = new JButton("SEARCH");
 	JButton clear = new JButton("CLEAR");
 	
