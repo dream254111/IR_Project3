@@ -2,7 +2,9 @@
 
 Finished
 - Read File from Dataset
+- GUI Version 1
 
 Task
 
-(put it here)
+- Search Document [by ...]
+- Ranking (TFIDF) [by ...]
