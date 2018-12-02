@@ -85,7 +85,7 @@ public class ArticleSearcher {
 	
 	public static List<Document> parseDocumentFromFile(File file)
 	{
-		
+		int i = 0;
 		List<Document> documents = new Vector<Document>();
 		for(File fileEntry : file.listFiles())
 		{
@@ -94,6 +94,7 @@ public class ArticleSearcher {
 			List<String> tokens = tokenize(doc.getContent());
 			doc.setTokens(tokens);
 			documents.add(doc);
+			System.out.println((i++));
 		}
 		
 				
@@ -125,5 +126,101 @@ public class ArticleSearcher {
 		}
 		//return
 		return tokens;
+	}
+	
+	public List<SearchResult> search(String queryString, int k) {
+		/************* YOUR CODE HERE ******************/
+		//Create token of Query
+		List<SearchResult> ret = new Vector<SearchResult>();
+		List<String> tokens = tokenize(queryString); //Tokenize the Query
+		List<String> inQ = new Vector<String>(); //Keep token that be in Query
+		
+		Vector<Double> vectorQ = new Vector<Double>();
+		double magnitudeQ;
+		
+		//Calculate tfidf of Query
+		for (String term : termPool) {
+			int tf = Collections.frequency(tokens, term);
+			if(tf != 0) {
+				vectorQ.add(idf.get(term) * (1 + Math.log10(tf)));
+				inQ.add(term);
+			}
+		}
+		
+		//Calculate magnitude of Query
+		double sum = 0.0;
+		for (Double num : vectorQ) {
+			sum += Math.pow(num, 2);
+		}
+		magnitudeQ = Math.sqrt(sum);
+		
+		//calculate tfidf of each doc
+		for (Document doc : this.docs) {
+			Vector<Double> vectorDoc = new Vector<Double>();
+
+			for (int i = 0; i < inQ.size(); i++) {
+				int tf = Collections.frequency(doc.getTokens(), inQ.get(i));
+				if(tf == 0)
+					vectorDoc.add(0.0);
+				else
+					vectorDoc.add(idf.get(inQ.get(i)) * (1 + Math.log10(tf)));
+			}
+			
+			//Calculate rank
+			double top = 0.0, bottom;
+			for (int i = 0; i < inQ.size(); i++)
+				top += vectorQ.get(i) * vectorDoc.get(i);
+			bottom = magnitudeQ * docMagnitude.get(doc.getA_id());
+			
+			if(bottom == 0)
+				rank.put(doc.getA_id(), -1.0);
+			else
+				rank.put(doc.getA_id(), top / bottom);
+			
+			//Release Memory
+			vectorDoc.clear();
+			
+		}
+		
+		//Find the first k-doc
+		int[] kDoc = new int[k];
+		int pointer = 0;
+		
+		while(pointer != k) {
+			double max = Integer.MIN_VALUE;
+			int doc = -1;
+			
+			for (Map.Entry<String, Double> entry : rank.entrySet()) {
+				boolean check = true;
+				for (int i = 0; i < pointer; i++)
+					if(entry.getKey() == kDoc[i]) check = false;
+				if(check) {
+					if(max < entry.getValue()) {
+						max = entry.getValue();
+						doc = entry.getKey();
+					}
+				}
+			}
+			kDoc[pointer] = doc;
+			pointer++;
+		}
+		
+		for (int i = 0; i < kDoc.length; i++) {
+			SearchResult tempRet = null;
+			if (rank.get(kDoc[i]) == -1) {
+				double temp = 0.0/0.0;
+				tempRet = new SearchResult(docWID.get(kDoc[i]), temp);
+			}
+			else {
+				if(rank.get(kDoc[i]) > 1)
+					tempRet = new SearchResult(docWID.get(kDoc[i]), 1);
+				else
+					tempRet = new SearchResult(docWID.get(kDoc[i]), rank.get(kDoc[i]));
+			}
+			ret.add(tempRet);
+		}
+		
+		return ret;
+		/***********************************************/
 	}
 }

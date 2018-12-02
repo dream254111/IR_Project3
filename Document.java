@@ -116,5 +116,10 @@ public class Document {
 				"\nIssue ID:"+this.issue_id+"\nContent\n"+(this.content.length() > 50? this.content.substring(0, 50)+"...":this.content)+"]";
 	}
 	
+	public int compareTo(Object arg0) {
+		Document other = (Document)arg0;
+		if(this.a_id == other.a_id && this.content != null && other.content != null) return this.content.compareTo(other.content);
+		return this.a_id.compareTo(other.a_id);
+	}
 	
 }
