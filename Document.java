@@ -1,22 +1,26 @@
 import java.io.*;
 import java.time.format.TextStyle;
+import java.util.List;
 
 public class Document {
-	private String j_id = "";
-	private String j_title = "";
-	private String a_id = "";
-	private String a_title = "";
-	private String issue_id = "";
-	private String content = "";
+	private String j_id = null;
+	private String j_title = null;
+	private String a_id = null;
+	private String a_title = null;
+	private String issue_id = null;
+	private String content = null;
+	private List<String> tokens = null;	//tokens after preprocessing raw text
 	
-	public Document(String j_id, String j_title, String a_id, String a_title, String issue_id, String content) {
+	public Document(String j_id, String j_title, String a_id, String a_title, String issue_id, String content, List<String> tokens) {
 		this.j_id = j_id;
 		this.j_title = j_title;
 		this.a_id = a_id;
 		this.a_title = a_title;
 		this.issue_id = issue_id;
 		this.content = content;
+		this.tokens = tokens;
 	}
+	
 	public Document(File file) {
 		BufferedReader reader = null;
 		String texts = "";
@@ -36,6 +40,11 @@ public class Document {
 			} 
 		}
 		String[] text = texts.split(",");
+//		for(String t : text) {
+//			System.out.println(t);
+//		}
+//
+//		System.out.println("++++++++++++++++++++++++++");
 		this.j_id = text[0];
 		this.j_title = text[1];
 		this.a_id = text[2];
@@ -82,6 +91,14 @@ public class Document {
 
 	public void setIssue_id(String issue_id) {
 		this.issue_id = issue_id;
+	}
+
+	public List<String> getTokens() {
+		return tokens;
+	}
+
+	public void setTokens(List<String> tokens) {
+		this.tokens = tokens;
 	}
 
 	public String getContent() {
