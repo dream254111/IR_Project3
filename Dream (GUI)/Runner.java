@@ -9,6 +9,8 @@ public class Runner {
 		File file = new File("./DB");
 		
 		ArticleSearcher test = new ArticleSearcher(file);	
+//		ArticleSearcher test = new ArticleSearcher();
+		
 		View view = new View();
 		Controller controller = new Controller(view, test);
 	}

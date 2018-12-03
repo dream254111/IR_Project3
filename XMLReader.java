@@ -32,7 +32,7 @@ public class XMLReader {
 			}
 			
 			content = content.replaceAll("[^a-zA-Z0-9\\s]", "");
-			return content;
+			return content.toUpperCase();
 			
 		} catch (Exception e) {
 
@@ -56,12 +56,12 @@ public class XMLReader {
 					
 					Element eElement = (Element) nNode;
 					
-					String j_title = eElement.getElementsByTagName("journal-title").item(0).getTextContent();
+					String j_title = eElement.getElementsByTagName("journal-title").item(0).getTextContent().toUpperCase();
 					while(eElement.getElementsByTagName("journal-id").item(i).equals(eElement.getElementsByTagName("journal-id").item(i-1))) i++;
-					String j_id = eElement.getElementsByTagName("journal-id").item(i).getTextContent();
-					String a_title = eElement.getElementsByTagName("article-title").item(0).getTextContent();
-					String a_id = eElement.getElementsByTagName("article-id").item(0).getTextContent();
-					String i_id = eElement.getElementsByTagName("issue-id").item(0).getTextContent();
+					String j_id = eElement.getElementsByTagName("journal-id").item(i).getTextContent().toUpperCase();
+					String a_title = eElement.getElementsByTagName("article-title").item(0).getTextContent().toUpperCase();
+					String a_id = eElement.getElementsByTagName("article-id").item(0).getTextContent().toUpperCase();
+					String i_id = eElement.getElementsByTagName("issue-id").item(0).getTextContent().toUpperCase();
 					
 					if(j_title.equals("") || j_id.equals("") || a_title.equals("") || a_id.equals("") || i_id.equals(""))
 						return 0;
@@ -80,13 +80,6 @@ public class XMLReader {
 						File newFile = new File(".\\DB\\" + j_id + "_" + a_id + ".txt");
 						
 						try {
-							j_id = j_id.toUpperCase();
-							j_title = j_title.toUpperCase();
-							a_id = a_id.toUpperCase();
-							a_title = a_title.toUpperCase();
-							i_id = i_id.toUpperCase();
-							content = content.toUpperCase();
-							
 							writer = new BufferedWriter(new FileWriter(newFile));
 							writer.append(j_id + ",");
 							writer.append(j_title + ",");

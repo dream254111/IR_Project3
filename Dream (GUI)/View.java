@@ -14,12 +14,12 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 public class View extends JFrame{
-	String[] header = {"Journal Name", "Article Name", "Score"};
+	String[] header = {"Journal ID", "Journal Name", "Article ID", "Article Name"};
 	
 	JPanel input = new JPanel();
 	JPanel output = new JPanel();
 	
-	JTextField inputText = new JTextField(15);
+	JTextField inputText = new JTextField(25);
 	JButton search = new JButton("SEARCH");
 	JButton clear = new JButton("CLEAR");
 	
@@ -28,8 +28,13 @@ public class View extends JFrame{
 
 	public View() {	
 		
-		tableContainer.setPreferredSize(new Dimension(290, 23));
+		tableContainer.setPreferredSize(new Dimension(840, 23));
 		table.setEnabled(false);
+		
+		table.getColumnModel().getColumn(0).setPreferredWidth(110);
+		table.getColumnModel().getColumn(1).setPreferredWidth(310);
+		table.getColumnModel().getColumn(2).setPreferredWidth(110);
+		table.getColumnModel().getColumn(3).setPreferredWidth(310);
 		
 		input.add(inputText);
 		input.add(search);
@@ -44,7 +49,7 @@ public class View extends JFrame{
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(400, 72);
+		this.setSize(480, 72);
 		this.setResizable(false);
 	}
 	
@@ -66,7 +71,7 @@ public class View extends JFrame{
 	// Reset Value
 	public void reset() {
 		this.resetText();
-		this.setSize(400, 72);
+		this.setSize(480, 72);
 		tableContainer.setVisible(false);
 	}
 	
@@ -84,15 +89,15 @@ public class View extends JFrame{
 	
 	// Set Output
 	public void setTable(String[][] dataset) {		
-		if(dataset[0][0].length() > 1) {
+		if(dataset[0][0].length() > 0) {
 			DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
 			for (int i = 0; i < dataset.length; i++) {
 				tableModel.addRow(dataset[i]);
 			}
 			
 			tableContainer.setVisible(true);
-			tableContainer.setPreferredSize(new Dimension(375, 183));
-			this.setSize(400, 265);
+			tableContainer.setPreferredSize(new Dimension(800, 183));
+			this.setSize(850, 265);
 		}
 		else {
 			this.reset();

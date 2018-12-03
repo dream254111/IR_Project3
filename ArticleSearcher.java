@@ -31,16 +31,25 @@ public class ArticleSearcher {
 	private HashMap<String, Integer> debugC;
 	private HashMap<String, Integer> debugT;
 	
+	public ArticleSearcher() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	 ArticleSearcher(File file) throws IOException {
 		this.docs = parseDocumentFromFile(file);
+		
 		conDocument = new HashMap<String, HashSet<String>>();
 		titleDocument = new HashMap<String, HashSet<String>>();
+		
 		termPoolC = new HashSet<String>();
 		termPoolT = new HashSet<String>();
+		
 		idfContent = new HashMap<String, Double>();
 		idfTitle = new HashMap<String, Double>();
+		
 		rankC = new HashMap<String, Double>();
 		rankT = new HashMap<String, Double>();
+		
 		conMagnitude = new HashMap<String, Double>();
 		titleMagnitude = new HashMap<String, Double>();
 		
@@ -51,12 +60,17 @@ public class ArticleSearcher {
 		
 		// Remove duplicate of document, and Map it in newDocument, termPool is finish
 		for (Document doc : this.docs) {
-			HashSet<String> tempSet = new HashSet<String>();
-			tempSet.addAll(doc.getContentTokens());
+			HashSet<String> tempSetC = new HashSet<String>();
+			HashSet<String> tempSetT = new HashSet<String>();
+			
+			tempSetC.addAll(doc.getContentTokens());
+			tempSetT.addAll(doc.getTitleTokens());	
+			
 			termPoolC.addAll(doc.getContentTokens());	//Add token into TermPool Content
 			termPoolT.addAll(doc.getTitleTokens());		//Add token into TermPool Title
-			conDocument.put(doc.getA_id(), tempSet);
-			titleDocument.put(doc.getA_id(), tempSet);
+			
+			conDocument.put(doc.getA_id(), tempSetC);
+			titleDocument.put(doc.getA_id(), tempSetT);
 			docWID.put(doc.getA_id(), doc);
 		}
 		
@@ -123,7 +137,7 @@ public class ArticleSearcher {
 			double sum = 0.0;
 			
 			for (String str : entry.getValue()) {
-				int freq = Collections.frequency(docWID.get(entry.getKey()).getContentTokens(), str);
+				int freq = Collections.frequency(docWID.get(entry.getKey()).getTitleTokens(), str);
 				double tempIDF = idfTitle.get(str);
 				double tempTF = 1.0 + Math.log10(freq);
 				double tempTFIDF = tempTF * tempIDF;
@@ -176,7 +190,8 @@ public class ArticleSearcher {
 	public List<SearchResult> search(String queryString, int k) {
 		/************* YOUR CODE HERE ******************/
 		//Create token of Query
-		List<SearchResult> ret = new Vector<SearchResult>();
+		List<SearchResult> retC = new Vector<SearchResult>();
+		List<SearchResult> retT = new Vector<SearchResult>();
 		List<String> tokens = tokenize(queryString); //Tokenize the Query
 		List<String> inQC = new Vector<String>(); //Keep token that be in Query
 		List<String> inQT = new Vector<String>(); //Keep token that be in Query
@@ -184,6 +199,8 @@ public class ArticleSearcher {
 		Vector<Double> vectorQC = new Vector<Double>();
 		Vector<Double> vectorQT = new Vector<Double>();
 		double magnitudeQC, magnitudeQT;
+		
+//		System.out.println("Term Pool : " + termPoolC.size() + ", " + termPoolT.size() );
 		
 		//Calculate tfidf of Query Content
 		for (String term : termPoolC) {
@@ -198,7 +215,7 @@ public class ArticleSearcher {
 		for (String term : termPoolT) {
 			int tf = Collections.frequency(tokens, term);
 			if(tf != 0) {
-				vectorQT.add(idfContent.get(term) * (1 + Math.log10(tf)));
+				vectorQT.add(idfTitle.get(term) * (1 + Math.log10(tf)));
 				inQT.add(term);
 			}
 		}
@@ -232,7 +249,7 @@ public class ArticleSearcher {
 			}
 			
 			for (int i = 0; i < inQT.size(); i++) {
-				int tf = Collections.frequency(doc.getContentTokens(), inQT.get(i));
+				int tf = Collections.frequency(doc.getTitleTokens(), inQT.get(i));
 				if(tf == 0)
 					vectorDocT.add(0.0);
 				else
@@ -266,23 +283,19 @@ public class ArticleSearcher {
 			vectorDocC.clear();
 			vectorDocT.clear();			
 		}
-		
-		// Find the first k-doc
-		String[] kDoc = new String[k];
-		int pointer = 0, checkCT = 0; 
+		 
 		String docC = "", docT = "";
 		
 		//check rank of content & title (should be equal)
 		System.out.println(rankC.size() + " " + rankT.size());
 		
-		while(pointer != k) {
+		while(retC.size() < 10) {
 			double maxC = Integer.MIN_VALUE;
-			double maxT = Integer.MIN_VALUE;
 			docC = "";
 			for (Map.Entry<String, Double> entry : rankC.entrySet()) {
 				boolean check = true;
-				for (int i = 0; i < pointer; i++)
-					if(entry.getKey() == kDoc[i]) check = false;
+				for (SearchResult sr : retC)
+					if(entry.getKey() == sr.getDocument().getA_id()) check = false;
 				if(check) {
 					if(maxC < entry.getValue()) {
 						maxC = entry.getValue();
@@ -290,11 +303,28 @@ public class ArticleSearcher {
 					}
 				}
 			}
+			SearchResult tempRet = null;
+			if (rankC.get(docC) < 0) {
+				double temp = 0.0/0.0;
+				tempRet = new SearchResult(docWID.get(docC), temp);
+			}
+			else {
+				if(rankC.get(docC) > 1)
+					tempRet = new SearchResult(docWID.get(docC), 1);
+				else
+					tempRet = new SearchResult(docWID.get(docC), rankC.get(docC));
+			}
+			retC.add(tempRet);
+
+		}
+		
+		while(retT.size() < 10) {
+			double maxT = Integer.MIN_VALUE;
 			docT = "";
 			for (Map.Entry<String, Double> entry : rankT.entrySet()) {
 				boolean check = true;
-				for (int i = 0; i < pointer; i++)
-					if(entry.getKey() == kDoc[i]) check = false;
+				for (SearchResult sr : retT)
+					if(entry.getKey() == sr.getDocument().getA_id()) check = false;
 				if(check) {
 					if(maxT < entry.getValue()) {
 						maxT = entry.getValue();
@@ -302,40 +332,56 @@ public class ArticleSearcher {
 					}
 				}
 			}
-			if(rankC.get(docC) > rankT.get(docT)) {
-				kDoc[pointer] = docC;
-				SearchResult tempRet = null;
-				if (rankC.get(docC) < 0) {
-					double temp = 0.0/0.0;
-					tempRet = new SearchResult(docWID.get(docC), temp);
-				}
-				else {
-					if(rankC.get(docC) > 1)
-						tempRet = new SearchResult(docWID.get(docC), 1);
-					else
-						tempRet = new SearchResult(docWID.get(docC), rankC.get(docC));
-				}
-				ret.add(tempRet);
-				checkCT = 1;
+			SearchResult tempRet = null;
+			if (rankT.get(docT) == -1) {
+				double temp = 0.0/0.0;
+				tempRet = new SearchResult(docWID.get(docT), temp);
 			}
 			else {
-				kDoc[pointer] = docT;
-				SearchResult tempRet = null;
-				if (rankT.get(docT) == -1) {
-					double temp = 0.0/0.0;
-					tempRet = new SearchResult(docWID.get(docT), temp);
-				}
-				else {
-					if(rankT.get(docT) > 1)
-						tempRet = new SearchResult(docWID.get(docT), 1);
-					else
-						tempRet = new SearchResult(docWID.get(docT), rankT.get(docT));
-				}
-				ret.add(tempRet);
-				checkCT = 2;
+//				if(rankT.get(docT) > 1)
+//					tempRet = new SearchResult(docWID.get(docT), 1);
+//				else
+					tempRet = new SearchResult(docWID.get(docT), rankT.get(docT));
 			}
-
-			pointer++;
+			retT.add(tempRet);
+		}
+		
+		for(SearchResult sr : retT) {
+			System.out.println(sr.getScore());
+		}
+		System.out.println("=============================");
+		for(SearchResult sr : retC) {
+			System.out.println(sr.getScore());
+		}
+		
+		//merge
+		int i = 0, t = 0, c = 0, count = 0;
+		List<SearchResult> ret = new Vector<SearchResult>();
+		while(i < k) {
+			if(retT.get(t).getScore() > retC.get(c).getScore() && ((retT.get(t).getScore() > 0.5) || count < 3)) {
+				System.out.println(Double.isNaN(retT.get(t).getScore()));
+				if(!ret.contains(retT.get(t)))
+					ret.add(new SearchResult(retT.get(t).getDocument(), retT.get(t).getScore()));
+				t++;
+				count++;
+			}
+			else {
+				boolean check = true;
+				for(SearchResult sr : ret) {
+					if(sr.getDocument().getA_id() == retC.get(c).getDocument().getA_id()) {
+						check = false;
+					}
+					if(!check) {
+						i--;
+						break;
+					}
+				}
+				if(check) {
+					ret.add(new SearchResult(retC.get(c).getDocument(), retC.get(c).getScore()));
+				}
+				c++;	
+			}
+			i++;
 		}
 		
 		return ret;

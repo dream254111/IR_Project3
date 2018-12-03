@@ -17,17 +17,28 @@ public class Controller {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				List<SearchResult> result = model.search(view.getTextInput(), 10);
+				boolean check = false;
 
-				String[][] data = new String[10][3];
-				for (int i = 0; i < result.size(); i++) {
+				String[][] data = new String[10][4];
+				for (int i = 0; i < 10; i++) {
+					if(Double.isNaN(result.get(i).getScore()) || result.get(i).getScore() == 0.0) {
+						check = true;
+						continue;
+					}
 					data[i][0] = result.get(i).getDocument().getJ_id();
-					data[i][1] = result.get(i).getDocument().getA_id();
-					data[i][2] = Double.toString(result.get(i).getScore());
+					data[i][1] = result.get(i).getDocument().getJ_title();
+					data[i][2] = result.get(i).getDocument().getA_id();
+					data[i][3] = result.get(i).getDocument().getA_title();
 				}
 				
 				view.resetTable();
 				
 				if(view.getTextInput().length() == 0) {
+					view.reset();
+					view.resetTable();
+					view.resetText();
+				}
+				else if (check) {
 					view.reset();
 					view.resetTable();
 					view.resetText();
