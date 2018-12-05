@@ -24,6 +24,13 @@ public class Document {
 		this.titleTokens = titleTokens;
 	}
 	
+	public Document(String j_title, String a_id, String a_title, String content){
+		this.j_title = j_title;
+		this.a_id = a_id;
+		this.a_title = a_title;
+		this.content = content;
+	}
+	
 	public Document(File file) {
 		BufferedReader reader = null;
 		String texts = "";

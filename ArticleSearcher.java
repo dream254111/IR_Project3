@@ -9,6 +9,8 @@ import java.util.Vector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.json.*;
+
 import opennlp.tools.stemmer.PorterStemmer;
 
 public class ArticleSearcher {
@@ -149,14 +151,30 @@ public class ArticleSearcher {
 		}
 	}
 	
-	public static List<Document> parseDocumentFromFile(File file){
+	public static List<Document> parseDocumentFromFile (File file){
 		List<Document> documents = new Vector<Document>();
-		for(File fileEntry : file.listFiles()) {
-			//add a document entry to documents
-			Document doc = new Document(fileEntry);
-			doc.setContentTokens(tokenize(doc.getContent()));
-			doc.setTitleTokens(tokenize(doc.getA_title()));
-			documents.add(doc);
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			String line;
+			int count = 0;
+			while((line = reader.readLine()) != null) {
+				//add a document entry to documents
+				JSONObject obj = new JSONObject(line);
+				String jTitle = obj.getString("journalName");
+				String aTitle = obj.getString("title");
+				String aID = obj.getString("id");
+				String abs = obj.getString("paperAbstract");
+				JSONArray arr = obj.getJSONArray("keyPhrases");
+				if(arr.length() != 0) count++;
+				Document doc = new Document(jTitle, aID, aTitle, abs);
+				doc.setContentTokens(tokenize(doc.getContent()));
+				doc.setTitleTokens(tokenize(doc.getA_title()));
+				documents.add(doc);
+			}
+			System.out.println("Keyphrase : " + count);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 				
 		return documents;

@@ -6,7 +6,7 @@ public class Runner {
 	
 	public static void main(String[] args) throws IOException {
 		
-		File file = new File("./DB");
+		File file = new File("./papers-2017-10-30-sample.json");
 		
 		ArticleSearcher test = new ArticleSearcher(file);	
 //		ArticleSearcher test = new ArticleSearcher();
