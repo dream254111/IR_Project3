@@ -164,14 +164,29 @@ public class ArticleSearcher {
 				String aTitle = obj.getString("title");
 				String aID = obj.getString("id");
 				String abs = obj.getString("paperAbstract");
-				JSONArray arr = obj.getJSONArray("keyPhrases");
+				String authors = "";
+				String fileName = aTitle.replaceAll("[^a-zA-Z0-9]", " ").trim();
+				if(fileName.length() > 250) fileName = fileName.substring(0, 250).trim();
+				JSONArray arr = obj.getJSONArray("authors");
+				for(int i = 0; i < arr.length(); i++) {
+					authors += arr.getJSONObject(i).getString("name") + ", ";
+				}
 				if(arr.length() != 0) count++;
 				Document doc = new Document(jTitle, aID, aTitle, abs);
 				doc.setContentTokens(tokenize(doc.getContent()));
 				doc.setTitleTokens(tokenize(doc.getA_title()));
 				documents.add(doc);
+				
+				PrintWriter writer = new PrintWriter("./Dataset/" + fileName + ".txt");
+				
+				writer.println("Journal Name : " + jTitle);
+				writer.println("Article Name : " + aTitle);
+				writer.println("Authors : " + authors);
+				writer.println("Publish year : " + obj.getInt("year"));
+				writer.println("Abstract : " + abs);
+				
+				writer.close();
 			}
-			System.out.println("Keyphrase : " + count);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
