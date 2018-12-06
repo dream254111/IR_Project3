@@ -155,6 +155,8 @@ public class ArticleSearcher {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line;
+//			File fileWrite = new File("./Dataset.json");
+//			BufferedWriter writer = new BufferedWriter(new FileWriter(fileWrite));
 			int count = 0;
 			while((line = reader.readLine()) != null) {
 				//add a document entry to documents
@@ -171,7 +173,9 @@ public class ArticleSearcher {
 				doc.setTitleTokens(tokenize(doc.getA_title()));
 				documents.add(doc);
 			}
-			System.out.println("Keyphrase : " + count);
+//			writer.close();
+			reader.close();
+//			System.out.println("Keyphrase : " + count);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -198,7 +202,7 @@ public class ArticleSearcher {
 			if(t.length() <= 1) continue;
 			if(stopWords.contains(t)) continue;
 			 
-//			t = porterStemmer.stem(t);
+			t = porterStemmer.stem(t);
 			tokens.add(t);
 		}
 		//return
@@ -305,7 +309,7 @@ public class ArticleSearcher {
 		String docC = "", docT = "";
 		
 		//check rank of content & title (should be equal)
-		System.out.println(rankC.size() + " " + rankT.size());
+//		System.out.println(rankC.size() + " " + rankT.size());
 		
 		while(retC.size() < 10) {
 			double maxC = Integer.MIN_VALUE;
@@ -364,20 +368,19 @@ public class ArticleSearcher {
 			retT.add(tempRet);
 		}
 		
-		for(SearchResult sr : retT) {
-			System.out.println(sr.getScore());
-		}
-		System.out.println("=============================");
-		for(SearchResult sr : retC) {
-			System.out.println(sr.getScore());
-		}
+//		for(SearchResult sr : retT) {
+//			System.out.println(sr.getScore());
+//		}
+//		System.out.println("=============================");
+//		for(SearchResult sr : retC) {
+//			System.out.println(sr.getScore());
+//		}
 		
 		//merge
 		int i = 0, t = 0, c = 0, count = 0;
 		List<SearchResult> ret = new Vector<SearchResult>();
 		while(i < k) {
 			if(retT.get(t).getScore() > retC.get(c).getScore() && ((retT.get(t).getScore() > 0.5) || count < 3)) {
-				System.out.println(Double.isNaN(retT.get(t).getScore()));
 				if(!ret.contains(retT.get(t)))
 					ret.add(new SearchResult(retT.get(t).getDocument(), retT.get(t).getScore()));
 				t++;

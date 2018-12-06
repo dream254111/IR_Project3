@@ -8,7 +8,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -23,24 +26,38 @@ public class View extends JFrame{
 	JButton search = new JButton("SEARCH");
 	JButton clear = new JButton("CLEAR");
 	
-	JTable table = new JTable(new DefaultTableModel(header, 0));
+	JTable table = new JTable(new DefaultTableModel(header, 0)) {
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+	};
 	JScrollPane tableContainer = new JScrollPane(table);
-
+	ListSelectionModel cellSelect = table.getSelectionModel();
+	
+//	JTextArea textContent = new JTextArea(14, 72);
+	
 	public View() {	
 		
 		tableContainer.setPreferredSize(new Dimension(800, 23));
+		table.setCellSelectionEnabled(true);
+		cellSelect.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
 		table.setEnabled(false);
 		
-		table.getColumnModel().getColumn(0).setPreferredWidth(420);
-		table.getColumnModel().getColumn(1).setPreferredWidth(420);
+		table.getColumnModel().getColumn(0).setPreferredWidth(300);
+		table.getColumnModel().getColumn(1).setPreferredWidth(500);
 //		table.getColumnModel().getColumn(2).setPreferredWidth(110);
 //		table.getColumnModel().getColumn(3).setPreferredWidth(310);
+		
+//		textContent.setLineWrap(true);
+//		textContent.setEditable(false);
 		
 		input.add(inputText);
 		input.add(search);
 		input.add(clear);
 		
 		output.add(tableContainer);
+//		output.add(textContent);
 		
 		this.add(input, BorderLayout.NORTH);
 		this.add(output, BorderLayout.CENTER);
@@ -63,6 +80,10 @@ public class View extends JFrame{
 		clear.addActionListener(action);
 	}
 	
+//	public void addSelectCellListener(ListSelectionListener action) {
+//		cellSelect.addListSelectionListener(action);
+//	}
+	
 	// Set Input
 	public String getTextInput() {
 		return inputText.getText();
@@ -73,6 +94,7 @@ public class View extends JFrame{
 		this.resetText();
 		this.setSize(480, 72);
 		tableContainer.setVisible(false);
+//		textContent.setVisible(false);
 	}
 	
 	public void resetTable() {
@@ -98,12 +120,26 @@ public class View extends JFrame{
 			tableContainer.setVisible(true);
 			tableContainer.setPreferredSize(new Dimension(800, 183));
 			this.setSize(850, 265);
+			
+//			500
 		}
 		else {
 			this.reset();
 			this.resetTable();
 		}
 	}
+	
+//	public void setContent() {
+//		this.setSize(850, 500);
+//	}
+	
+	public JTable getTable() {
+		return this.table;
+	}
+	
+//	public void setContentText(String str) {
+//		textContent.setText(str);
+//	}
 
 	// Test
 	public String noRow() {
