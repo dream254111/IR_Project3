@@ -24,7 +24,8 @@ public class TextFrame extends JFrame{
 		
 		boolean end = false;
 		int passText = 0;
-		String nStr = str.substring(0);
+		String nStr = str.toLowerCase();
+		query = query.toLowerCase();
 		ArrayList<Object> debug = new ArrayList<Object>();
 		int p0 = 0, p1, p2 = -100;
 		
