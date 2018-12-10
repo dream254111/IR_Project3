@@ -34,30 +34,23 @@ public class View extends JFrame{
 	JScrollPane tableContainer = new JScrollPane(table);
 	ListSelectionModel cellSelect = table.getSelectionModel();
 	
-//	JTextArea textContent = new JTextArea(14, 72);
-	
 	public View() {	
 		
 		tableContainer.setPreferredSize(new Dimension(800, 23));
 		table.setCellSelectionEnabled(true);
 		cellSelect.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
-		table.setEnabled(false);
+//		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//		table.setEnabled(false);
 		
 		table.getColumnModel().getColumn(0).setPreferredWidth(300);
 		table.getColumnModel().getColumn(1).setPreferredWidth(500);
-//		table.getColumnModel().getColumn(2).setPreferredWidth(110);
-//		table.getColumnModel().getColumn(3).setPreferredWidth(310);
-		
-//		textContent.setLineWrap(true);
-//		textContent.setEditable(false);
 		
 		input.add(inputText);
 		input.add(search);
 		input.add(clear);
 		
 		output.add(tableContainer);
-//		output.add(textContent);
 		
 		this.add(input, BorderLayout.NORTH);
 		this.add(output, BorderLayout.CENTER);
@@ -80,9 +73,9 @@ public class View extends JFrame{
 		clear.addActionListener(action);
 	}
 	
-//	public void addSelectCellListener(ListSelectionListener action) {
-//		cellSelect.addListSelectionListener(action);
-//	}
+	public void addTableListerner(ListSelectionListener action) {
+		cellSelect.addListSelectionListener(action);
+	}
 	
 	// Set Input
 	public String getTextInput() {
@@ -94,7 +87,6 @@ public class View extends JFrame{
 		this.resetText();
 		this.setSize(480, 72);
 		tableContainer.setVisible(false);
-//		textContent.setVisible(false);
 	}
 	
 	public void resetTable() {
@@ -120,8 +112,6 @@ public class View extends JFrame{
 			tableContainer.setVisible(true);
 			tableContainer.setPreferredSize(new Dimension(800, 183));
 			this.setSize(850, 265);
-			
-//			500
 		}
 		else {
 			this.reset();
@@ -129,17 +119,9 @@ public class View extends JFrame{
 		}
 	}
 	
-//	public void setContent() {
-//		this.setSize(850, 500);
-//	}
-	
 	public JTable getTable() {
 		return this.table;
 	}
-	
-//	public void setContentText(String str) {
-//		textContent.setText(str);
-//	}
 
 	// Test
 	public String noRow() {

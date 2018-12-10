@@ -360,21 +360,11 @@ public class ArticleSearcher {
 				tempRet = new SearchResult(docWID.get(docT), temp);
 			}
 			else {
-//				if(rankT.get(docT) > 1)
-//					tempRet = new SearchResult(docWID.get(docT), 1);
-//				else
 					tempRet = new SearchResult(docWID.get(docT), rankT.get(docT));
 			}
 			retT.add(tempRet);
 		}
 		
-//		for(SearchResult sr : retT) {
-//			System.out.println(sr.getScore());
-//		}
-//		System.out.println("=============================");
-//		for(SearchResult sr : retC) {
-//			System.out.println(sr.getScore());
-//		}
 		
 		//merge
 		int i = 0, t = 0, c = 0, count = 0;
@@ -409,7 +399,6 @@ public class ArticleSearcher {
 		/***********************************************/
 	}
 
-	
 	public static void displaySearchResults(List<SearchResult> results)
 	{	StringBuilder str = new StringBuilder();
 		for(int i = 0; i < results.size(); i++)
