@@ -26,18 +26,25 @@ public class TextFrame extends JFrame{
 		int passText = 0;
 		String nStr = str.toLowerCase();
 		query = query.toLowerCase();
+		String[] lQuery = query.split(" ");
+		
 		ArrayList<Object> debug = new ArrayList<Object>();
 		int p0 = 0, p1, p2 = -100;
 		
-		while(true) {
-			p0 = nStr.indexOf(query);
-			if(p0 == -1) break;
-			p1 = p0 + query.length();
-			
-			debug.add(highlight.addHighlight(p0 + passText, p1 + passText, painter));
-			passText += p1;
-			nStr = nStr.substring(p1);
+		for (String entry : lQuery) {
+			passText = 0;
+			nStr = str.toLowerCase();
+			while(true) {
+				p0 = nStr.indexOf(entry);
+				if(p0 == -1) break;
+				p1 = p0 + entry.length();
+				
+				debug.add(highlight.addHighlight(p0 + passText, p1 + passText, painter));
+				passText += p1;
+				nStr = nStr.substring(p1);
+			}
 		}
+		
 			
 		System.out.println(query);
 		
